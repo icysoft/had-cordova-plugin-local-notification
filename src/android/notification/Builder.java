@@ -27,9 +27,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationCompat.MessagingStyle.Message;
-import android.support.v4.media.app.NotificationCompat.MediaStyle;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationCompat.MessagingStyle.Message;
+import androidx.media.app.NotificationCompat.MediaStyle;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -372,11 +372,15 @@ public final class Builder {
         }
 
         int reqCode = random.nextInt();
-
-        PendingIntent deleteIntent = PendingIntent.getBroadcast(
-                context, reqCode, intent, FLAG_UPDATE_CURRENT);
-
-        builder.setDeleteIntent(deleteIntent);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            PendingIntent deleteIntent = PendingIntent.getBroadcast(
+                    context, reqCode, intent, PendingIntent.FLAG_IMMUTABLE);
+            builder.setDeleteIntent(deleteIntent);
+        } else {
+            PendingIntent deleteIntent = PendingIntent.getBroadcast(
+                    context, reqCode, intent, FLAG_UPDATE_CURRENT);
+            builder.setDeleteIntent(deleteIntent);
+        }
     }
 
     /**
@@ -402,10 +406,15 @@ public final class Builder {
 
         int reqCode = random.nextInt();
 
-        PendingIntent contentIntent = PendingIntent.getService(
-                context, reqCode, intent, FLAG_UPDATE_CURRENT);
-
-        builder.setContentIntent(contentIntent);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            PendingIntent contentIntent = PendingIntent.getBroadcast(
+                    context, reqCode, intent, PendingIntent.FLAG_IMMUTABLE);
+            builder.setContentIntent(contentIntent);
+        } else {
+            PendingIntent contentIntent = PendingIntent.getBroadcast(
+                    context, reqCode, intent, FLAG_UPDATE_CURRENT);
+            builder.setContentIntent(contentIntent);
+        }
     }
 
     /**
